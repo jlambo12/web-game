@@ -1,0 +1,57 @@
+.app-shell {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 560px 1fr;
+}
+
+.left-panel,
+.right-panel {
+  min-width: 0;
+}
+
+.game-panel,
+.hud-section,
+.hud-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.game-panel {
+  border-radius: 24px;
+  padding: 20px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: #a7f3d0;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  background: rgba(52, 211, 153, 0.12);
+  font-size: 14px;
+}
+
+.game-root {
+  width: 540px;
+  height: 540px;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: #020617;
+}
+
+@media (max-width: 1180px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+}
