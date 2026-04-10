@@ -14,7 +14,7 @@ function renderHud(state) {
   return `
     <section class="hud-section">
       <h2>Project HUD</h2>
-      <p class="muted">This is a DOM HUD scaffold separated from Phaser scene code.</p>
+      <p class="muted">DOM HUD отдельно от Phaser-сцен. Это база для будущих меню, наград и прогрессии.</p>
     </section>
 
     <section class="hud-section">
@@ -23,7 +23,9 @@ function renderHud(state) {
         ${createStatCard("Игрок", state.selectedPlayer, "Selected profile")}
         ${createStatCard("Scene", state.scene, "Current Phaser scene")}
         ${createStatCard("Score", state.run.score, "Current run score")}
+        ${createStatCard("Best", state.bestScore, "Saved best score")}
         ${createStatCard("Shards", state.run.shardsThisRun, "Session shards")}
+        ${createStatCard("Status", state.run.status, "Run state")}
       </div>
     </section>
 
@@ -37,7 +39,7 @@ function renderHud(state) {
         <div class="progress-fill" style="width: ${progressPercent}%"></div>
       </div>
       <div class="muted" style="margin-top: 10px;">
-        Grid ${state.run.boardSize}x${state.run.boardSize}, expansions ${state.run.fieldExpansions}
+        Grid ${state.run.boardSize}x${state.run.boardSize}, expansions ${state.run.fieldExpansions}, level ${state.run.level}
       </div>
     </section>
 
@@ -47,6 +49,15 @@ function renderHud(state) {
         <div class="hud-label">Computed reward</div>
         <div class="hud-value">${state.rewardPreview.shards}</div>
         <div class="hud-hint">${state.rewardPreview.reasons.join(" · ") || "No reward preview yet"}</div>
+      </div>
+    </section>
+
+    <section class="hud-section">
+      <h3>Controls</h3>
+      <div class="hud-card">
+        <div class="hud-hint">W / A / S / D — movement</div>
+        <div class="hud-hint">Space — start / restart from menu</div>
+        <div class="hud-hint">После смерти откроется Game Over scene.</div>
       </div>
     </section>
 

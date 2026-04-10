@@ -6,8 +6,17 @@ export class MainMenuScene extends Phaser.Scene {
   }
 
   create() {
+    const store = this.game.registry.get("profileStore");
+    store?.setState({
+      scene: "MainMenuScene",
+      message: "Press SPACE or ENTER to start the scaffold run.",
+      run: {
+        status: "menu",
+      },
+    });
+
     this.add
-      .text(270, 250, "Snake Roguelite", {
+      .text(270, 220, "Snake Roguelite", {
         color: "#f8fafc",
         fontSize: "28px",
         fontStyle: "bold",
@@ -16,15 +25,16 @@ export class MainMenuScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.add
-      .text(270, 290, "Стартовый экран-заглушка. Здесь позже будет выбор профиля и запуск забега.", {
+      .text(270, 270, "SPACE / ENTER — start\nW A S D — move", {
         color: "#94a3b8",
-        fontSize: "14px",
+        fontSize: "16px",
         align: "center",
-        wordWrap: { width: 360 },
         fontFamily: "Arial",
       })
       .setOrigin(0.5);
 
-    this.time.delayedCall(250, () => this.scene.start("RunScene"));
+    const start = () => this.scene.start("RunScene");
+    this.input.keyboard.once("keydown-SPACE", start);
+    this.input.keyboard.once("keydown-ENTER", start);
   }
 }

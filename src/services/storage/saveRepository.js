@@ -4,6 +4,8 @@ const defaultState = {
   selectedPlayer: "Guest",
   scene: "BootScene",
   message: "Scaffold initialized.",
+  bestScore: 0,
+  lastRun: null,
   run: {
     score: 0,
     level: 1,
@@ -12,6 +14,7 @@ const defaultState = {
     boardSize: 20,
     fieldExpansions: 0,
     shardsThisRun: 0,
+    status: "idle",
   },
   rewardPreview: {
     shards: 0,
@@ -23,7 +26,19 @@ function loadState() {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultState;
-    return { ...defaultState, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    return {
+      ...defaultState,
+      ...parsed,
+      run: {
+        ...defaultState.run,
+        ...(parsed.run || {}),
+      },
+      rewardPreview: {
+        ...defaultState.rewardPreview,
+        ...(parsed.rewardPreview || {}),
+      },
+    };
   } catch {
     return defaultState;
   }

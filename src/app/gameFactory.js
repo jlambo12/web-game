@@ -17,5 +17,7 @@ export function createGame(parentElement) {
     scene: [BootScene, PreloadScene, MainMenuScene, RunScene, GameOverScene],
   });
 
+  game.registry.set("profileStore", store);
+
   return { game, store };
 }
