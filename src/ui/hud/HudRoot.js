@@ -18,6 +18,23 @@ function renderHud(state) {
     </section>
 
     <section class="hud-section">
+      <h3>Player profile</h3>
+      <div class="hud-card hud-card-tight">
+        <div class="hud-label">Имя игрока</div>
+        <div class="hud-actions">
+          <input id="player-name-input" class="hud-input" value="${state.selectedPlayer}" maxlength="24" placeholder="Введите имя" />
+          <div class="hud-buttons">
+            <button id="save-player-button" class="hud-button">Сохранить имя</button>
+            <button id="start-run-button" class="hud-button secondary">Старт</button>
+            <button id="menu-button" class="hud-button secondary">Меню</button>
+            <button id="reset-progress-button" class="hud-button danger">Сбросить прогресс</button>
+          </div>
+        </div>
+        <div class="hud-hint">Имя сохраняется в localStorage и используется в следующих забегах.</div>
+      </div>
+    </section>
+
+    <section class="hud-section">
       <h3>Player and run</h3>
       <div class="hud-grid">
         ${createStatCard("Игрок", state.selectedPlayer, "Selected profile")}
@@ -71,9 +88,47 @@ function renderHud(state) {
   `;
 }
 
-export function mountHud(container, store) {
+function wireHudEvents(container, store, game) {
+  const playerNameInput = container.querySelector("#player-name-input");
+  const savePlayerButton = container.querySelector("#save-player-button");
+  const startRunButton = container.querySelector("#start-run-button");
+  const menuButton = container.querySelector("#menu-button");
+  const resetProgressButton = container.querySelector("#reset-progress-button");
+
+  savePlayerButton?.addEventListener("click", () => {
+    store.setSelectedPlayer(playerNameInput?.value);
+  });
+
+  playerNameInput?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      store.setSelectedPlayer(playerNameInput.value);
+    }
+  });
+
+  startRunButton?.addEventListener("click", () => {
+    if (playerNameInput) {
+      store.setSelectedPlayer(playerNameInput.value);
+    }
+    game.scene.start("RunScene");
+  });
+
+  menuButton?.addEventListener("click", () => {
+    if (playerNameInput) {
+      store.setSelectedPlayer(playerNameInput.value);
+    }
+    game.scene.start("MainMenuScene");
+  });
+
+  resetProgressButton?.addEventListener("click", () => {
+    store.resetProgress();
+    game.scene.start("MainMenuScene");
+  });
+}
+
+export function mountHud(container, store, game) {
   const render = (state) => {
     container.innerHTML = renderHud(state);
+    wireHudEvents(container, store, game);
   };
 
   store.subscribe(render);

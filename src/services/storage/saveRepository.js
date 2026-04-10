@@ -22,14 +22,33 @@ const defaultState = {
   },
 };
 
+function normalizePlayerName(value) {
+  const normalized = String(value || "").trim().replace(/\s+/g, " ");
+  return normalized || "Guest";
+}
+
+function createDefaultState(selectedPlayer = "Guest") {
+  return {
+    ...defaultState,
+    selectedPlayer: normalizePlayerName(selectedPlayer),
+    run: {
+      ...defaultState.run,
+    },
+    rewardPreview: {
+      ...defaultState.rewardPreview,
+    },
+  };
+}
+
 function loadState() {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return defaultState;
+    if (!raw) return createDefaultState();
     const parsed = JSON.parse(raw);
     return {
-      ...defaultState,
+      ...createDefaultState(parsed.selectedPlayer),
       ...parsed,
+      selectedPlayer: normalizePlayerName(parsed.selectedPlayer),
       run: {
         ...defaultState.run,
         ...(parsed.run || {}),
@@ -40,7 +59,7 @@ function loadState() {
       },
     };
   } catch {
-    return defaultState;
+    return createDefaultState();
   }
 }
 
@@ -56,6 +75,11 @@ export function createProfileStore() {
   let state = loadState();
   const listeners = new Set();
 
+  const emit = () => {
+    persistState(state);
+    listeners.forEach((listener) => listener(state));
+  };
+
   return {
     getState() {
       return state;
@@ -64,6 +88,7 @@ export function createProfileStore() {
       state = {
         ...state,
         ...patch,
+        selectedPlayer: normalizePlayerName(patch.selectedPlayer ?? state.selectedPlayer),
         run: {
           ...state.run,
           ...(patch.run || {}),
@@ -73,8 +98,21 @@ export function createProfileStore() {
           ...(patch.rewardPreview || {}),
         },
       };
-      persistState(state);
-      listeners.forEach((listener) => listener(state));
+      emit();
+    },
+    setSelectedPlayer(playerName) {
+      state = {
+        ...state,
+        selectedPlayer: normalizePlayerName(playerName),
+        message: `Player profile selected: ${normalizePlayerName(playerName)}.`,
+      };
+      emit();
+    },
+    resetProgress() {
+      const selectedPlayer = state.selectedPlayer;
+      state = createDefaultState(selectedPlayer);
+      state.message = `Progress reset for ${selectedPlayer}.`;
+      emit();
     },
     subscribe(listener) {
       listeners.add(listener);
@@ -82,9 +120,8 @@ export function createProfileStore() {
       return () => listeners.delete(listener);
     },
     reset() {
-      state = { ...defaultState };
-      persistState(state);
-      listeners.forEach((listener) => listener(state));
+      state = createDefaultState();
+      emit();
     },
   };
 }

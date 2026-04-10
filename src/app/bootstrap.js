@@ -27,5 +27,5 @@ export function bootstrapApp() {
   const hudRoot = document.getElementById("hud-root");
 
   const app = createGame(gameRoot);
-  mountHud(hudRoot, app.store);
+  mountHud(hudRoot, app.store, app.game);
 }
